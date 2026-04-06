@@ -9,10 +9,7 @@ Vector::Vector(const ValueType* rawArray, const size_t size, float coef): _size(
 	}
 }
 
-Vector::Vector(const Vector& other) {
-	_size = other._size;
-	_capacity = other._capacity;
-	_multiplicativeCoef = other._multiplicativeCoef;
+Vector::Vector(const Vector& other): _size(other._size), _capacity(other._capacity), _multiplicativeCoef(other._multiplicativeCoef) {
 	_data = new ValueType[_capacity];
 	for(int i = 0; i < _size; i++) {
 		_data[i] = other._data[i];
@@ -20,14 +17,16 @@ Vector::Vector(const Vector& other) {
 }
 
 Vector& Vector::operator=(const Vector& other) {
-	_size = other._size;
-	_capacity = other._capacity;
-	_multiplicativeCoef = other._multiplicativeCoef;
-	_data = new ValueType[_capacity];
-	for(int i = 0; i < _size; i++) {
-		_data[i] = other._data[i];
+	if (&other != this) {
+		_size = other._size;
+		_capacity = other._capacity;
+		_multiplicativeCoef = other._multiplicativeCoef;
+		delete[] _data;
+		_data = new ValueType[_capacity];
+		for(int i = 0; i < _size; i++) {
+			_data[i] = other._data[i];
+		}
 	}
-	delete[] other._data;
 	return *this;
 }
 
@@ -42,13 +41,15 @@ Vector::Vector(Vector&& other) noexcept {
 }
 
 Vector& Vector::operator=(Vector&& other) noexcept {
-	_data = other._data;
-	_size = other._size;
-	_capacity = other._capacity;
-	_multiplicativeCoef = other._multiplicativeCoef;
-	other._data = nullptr;
-	other._size = 0;
-	other._capacity = 0;
+	if (&other != this) {
+		_data = other._data;
+		_size = other._size;
+		_capacity = other._capacity;
+		_multiplicativeCoef = other._multiplicativeCoef;
+		other._data = nullptr;
+		other._size = 0;
+		other._capacity = 0;
+	}
 	return *this;
 }
 
@@ -68,9 +69,9 @@ const ValueType& Vector::operator[](size_t idx) const {
 
 void Vector::pushBack(const ValueType& value) {
 	if (_capacity == 0) {
-		reserve(1);
+		reserve(2);
 	}
-	if (_size + 1 > _capacity) {
+	if (_size == _capacity) {
 		reserve(_capacity * _multiplicativeCoef);
 	}
 	_data[_size] = value;
@@ -79,14 +80,14 @@ void Vector::pushBack(const ValueType& value) {
 
 void Vector::pushFront(const ValueType& value) {
 	if (_capacity == 0) {
-		reserve(1);
+		reserve(2);
 	}
-	if (_size + 1 > _capacity) {
+	if (_size == _capacity) {
 		reserve(_capacity * _multiplicativeCoef);
 	}
 	if (_size > 0) {
-		for(size_t i = 0; i < _size + 1; i++) {
-			_data[i+1] = _data[i];
+		for(size_t i = _size; i > 0; i--) {
+			_data[i] = _data[i-1];
 		}
 	}
 	_data[0] = value;
@@ -94,15 +95,20 @@ void Vector::pushFront(const ValueType& value) {
 }
 
 void Vector::insert(const ValueType& value, size_t pos) {
-	if (_size  > _capacity) {
-		reserve(_capacity * _multiplicativeCoef);
+	if (pos < 0 || pos > _size) throw std::runtime_error("wrong index");
+	if (_size >= _capacity) {
+		reserve((_size + 1)  * _multiplicativeCoef);
 	}
 
-	for(size_t i = _size - 1; i > pos - 1; i--) {
-		_data[i+1] = _data[i];
+	if (pos == 0) pushFront(value);
+	else if (pos == _size) pushBack(value);
+	else {
+		for(size_t i = _size - 1; i > pos - 1; i--) {
+			_data[i+1] = _data[i];
+		}
+		_data[pos] = value;
+		_size++;
 	}
-	_data[pos] = value;
-	_size++;
 }
 
 void Vector::insert(const ValueType* values, size_t size, size_t pos) {
@@ -142,10 +148,12 @@ void Vector::insert(const Vector& vector, size_t pos) {
 }
 
 void Vector::popBack() {
+	if (_size == 0) throw std::runtime_error("empty vector popBack");
 	_size--;
 }
 
 void Vector::popFront() {
+	if (_size == 0) throw std::runtime_error("empty vector popFront");
 	for(size_t i = 0; i < _size; i++) {
 		_data[i] = _data[i+1];
 	}
