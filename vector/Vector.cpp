@@ -9,7 +9,7 @@ Vector::Vector(const ValueType* rawArray, const size_t size, float coef): _size(
 	}
 }
 
-Vector::Vector(const Vector& other): _size(other._size), _capacity(other._capacity), _multiplicativeCoef(other._multiplicativeCoef) {
+Vector::Vector(const Vector& other): _size(other._size), _capacity(other._size), _multiplicativeCoef(other._multiplicativeCoef) {
 	_data = new ValueType[_capacity];
 	for(int i = 0; i < _size; i++) {
 		_data[i] = other._data[i];
@@ -68,22 +68,16 @@ const ValueType& Vector::operator[](size_t idx) const {
 }
 
 void Vector::pushBack(const ValueType& value) {
-	if (_capacity == 0) {
-		reserve(2);
-	}
 	if (_size == _capacity) {
-		reserve(_capacity * _multiplicativeCoef);
+		reserve((_size + 1)  * _multiplicativeCoef);
 	}
 	_data[_size] = value;
 	_size++;
 }
 
 void Vector::pushFront(const ValueType& value) {
-	if (_capacity == 0) {
-		reserve(2);
-	}
 	if (_size == _capacity) {
-		reserve(_capacity * _multiplicativeCoef);
+		reserve((_size + 1) * _multiplicativeCoef);
 	}
 	if (_size > 0) {
 		for(size_t i = _size; i > 0; i--) {
@@ -161,15 +155,15 @@ void Vector::popFront() {
 }
 
 void Vector::erase(size_t pos, size_t count) {
-	if (pos < 0 && pos >= _size) throw std::runtime_error("can`t erase this elemenrs");
+	if (pos < 0 || pos >= _size) throw std::runtime_error("can`t erase this elements");
 	if (pos == _size - 1) popBack();
 	if (pos == 0) popFront();
 	else {
-		if (pos + count >= _size) {
-			for(size_t i = pos; i < _size - pos; i++) {
+		if (pos + count > _size) {
+			for(size_t i = pos; i < _size - (count - pos); i++) {
 				_data[i] = _data[i+count];
 			}
-			_size = pos + 1;
+			_size -= _size - pos;
 		}
 		else {
 			for(size_t i = pos; i < _size - pos; i++) {
