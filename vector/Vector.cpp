@@ -227,6 +227,14 @@ void Vector::shrinkToFit() {
 	_capacity = _size;
 }
 
+Vector::Iterator Vector::begin() {
+	return Iterator(_data);
+}
+
+Vector::Iterator Vector::end() {
+	return Iterator(_data + _size);
+}
+
 Vector::Iterator::Iterator(ValueType* ptr): _ptr(ptr) {}
 
 ValueType& Vector::Iterator::operator*() {
