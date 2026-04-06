@@ -19,7 +19,7 @@ Vector::Vector(const Vector& other): _size(other._size), _capacity(other._size),
 Vector& Vector::operator=(const Vector& other) {
 	if (&other != this) {
 		_size = other._size;
-		_capacity = other._capacity;
+		_capacity = other._size;
 		_multiplicativeCoef = other._multiplicativeCoef;
 		delete[] _data;
 		_data = new ValueType[_capacity];
@@ -152,18 +152,14 @@ void Vector::popFront() {
 
 void Vector::erase(size_t pos, size_t count) {
 	if (pos < 0 || pos >= _size) throw std::runtime_error("can`t erase this elements");
-	if (pos == _size - 1) popBack();
-	if (pos == 0) popFront();
+	else if (pos == _size - 1) popBack();
 	else {
 		if (pos + count > _size) {
-			for(size_t i = pos; i < _size - pos; i++) {
-				_data[i] = _data[i+count];
-			}
 			_size -= _size - pos;
 		}
 		else {
-			for(size_t i = pos; i < _size - pos; i++) {
-				_data[i] = _data[i+count];
+			for(size_t i = pos; i < _size - count; i++) {
+				_data[i] = _data[i + count];
 			}
 			_size = _size - count;
 		}
