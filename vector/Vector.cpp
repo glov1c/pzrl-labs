@@ -30,11 +30,7 @@ Vector& Vector::operator=(const Vector& other) {
 	return *this;
 }
 
-Vector::Vector(Vector&& other) noexcept {
-	_data = other._data;
-	_size = other._size;
-	_capacity = other._capacity;
-	_multiplicativeCoef = other._multiplicativeCoef;
+Vector::Vector(Vector&& other) noexcept: _data(other._data), _size(other._size), _capacity(other._capacity), _multiplicativeCoef(other._multiplicativeCoef) {
 	other._data = nullptr;
 	other._size = 0;
 	other._capacity = 0;
@@ -160,7 +156,7 @@ void Vector::erase(size_t pos, size_t count) {
 	if (pos == 0) popFront();
 	else {
 		if (pos + count > _size) {
-			for(size_t i = pos; i < _size - (count - pos); i++) {
+			for(size_t i = pos; i < _size - pos; i++) {
 				_data[i] = _data[i+count];
 			}
 			_size -= _size - pos;
