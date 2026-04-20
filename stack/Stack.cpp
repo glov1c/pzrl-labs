@@ -21,6 +21,7 @@ Stack::Stack(const ValueType* valueArray, const size_t arraySize, StackContainer
 }
 
 Stack::Stack(const Stack& copyStack) {
+	if (copyStack._pimpl == nullptr) return;
 	if (copyStack._containerType == StackContainer::Vector) {
 		*this = Stack((ValueType*)copyStack._pimpl, copyStack._pimpl->size(), StackContainer::Vector);
 	}
@@ -57,18 +58,22 @@ void Stack::push(const ValueType& value) {
 }
 
 void Stack::pop() {
+	if (_pimpl == nullptr) throw std::runtime_error("empty stack");
 	_pimpl->pop();
 }
 
 const ValueType& Stack::top() const {
+	if (_pimpl == nullptr) throw std::runtime_error("empty stack");
 	return _pimpl->top();
 }
 
 bool Stack::isEmpty() const {
+	if (_pimpl == nullptr) return true; 
 	return _pimpl->isEmpty();
 }
 
 size_t Stack::size() const {
+	if (_pimpl == nullptr) return 0;
 	return _pimpl->size();
 }
 	

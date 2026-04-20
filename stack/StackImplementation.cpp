@@ -9,7 +9,7 @@ void StackOnVector::pop() {
 }
 
 const ValueType& StackOnVector::top() const {
-	return vec[size()];
+	return vec[size()-1];
 }
 
 bool StackOnVector::isEmpty() const {
@@ -29,7 +29,7 @@ void StackOnList::pop() {
 }
 
 const ValueType& StackOnList::top() const {
-	return list[size()];
+	return list[size()-1];
 }
 
 bool StackOnList::isEmpty() const {
