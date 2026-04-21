@@ -20,6 +20,14 @@ size_t StackOnVector::size() const {
 	return vec.size();
 }
 
+const ValueType& StackOnVector::operator[](int k) const {
+	return vec[k];
+}
+
+ValueType& StackOnVector::operator[](int k) {
+	return vec[k];
+}
+
 void StackOnList::push(const ValueType& value) {
        list.push_back(value);
 }       
@@ -38,4 +46,12 @@ bool StackOnList::isEmpty() const {
 
 size_t StackOnList::size() const {
 	return list.size();
+}
+
+const ValueType& StackOnList::operator[](int k) const {
+	return list[k];
+}
+
+ValueType& StackOnList::operator[](int k) {
+	return list[k];
 }

@@ -20,15 +20,24 @@ Stack::Stack(const ValueType* valueArray, const size_t arraySize, StackContainer
 	}
 }
 
+Stack::Stack(const IStackImplementation* impl, const size_t arraySize, StackContainer container) {
+	if (container == StackContainer::Vector) _pimpl = new StackOnVector(); 
+	else if (container == StackContainer::List) _pimpl = new StackOnList(); 
+	else throw std::runtime_error("no such container type");
+
+	for(size_t i = 0; i < arraySize; i++) {
+		push((*impl)[i]);
+	}
+}
+
 Stack::Stack(const Stack& copyStack) {
 	if (copyStack._pimpl == nullptr) return;
 	if (copyStack._containerType == StackContainer::Vector) {
-		*this = Stack((ValueType*)copyStack._pimpl, copyStack._pimpl->size(), StackContainer::Vector);
+		*this = Stack(copyStack._pimpl, copyStack._pimpl->size(), StackContainer::Vector);
 	}
 	else if (copyStack._containerType == StackContainer::List) {
-		*this = Stack((ValueType*)copyStack._pimpl, copyStack._pimpl->size(), StackContainer::List);
+		*this = Stack(copyStack._pimpl, copyStack._pimpl->size(), StackContainer::List);
 	}
-	else throw std::runtime_error("no such container type");
 }
 
 Stack& Stack::operator=(const Stack& copyStack) {

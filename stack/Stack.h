@@ -23,6 +23,7 @@ public:
     Stack(StackContainer container = StackContainer::Vector);
     // элементы массива последовательно подкладываются в стек
     Stack(const ValueType* valueArray, const size_t arraySize, StackContainer container = StackContainer::Vector);
+    Stack(const IStackImplementation* impl, const size_t arraySize, StackContainer container = StackContainer::Vector);
 
     explicit Stack(const Stack& copyStack);
     Stack& operator=(const Stack& copyStack);

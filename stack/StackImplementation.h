@@ -19,6 +19,9 @@ public:
     // размер 
     virtual size_t size() const = 0;
     // виртуальный деструктор
+    virtual ValueType& operator[](int k) = 0;
+    virtual const ValueType& operator[](int k) const = 0;
+
     virtual ~IStackImplementation() = default;
 };
 
@@ -32,6 +35,8 @@ class StackOnVector: public IStackImplementation {
 		const ValueType& top() const override;
 		bool isEmpty() const override;
 		size_t size() const override;
+		ValueType& operator[](int k) override;
+    		const ValueType& operator[](int k) const override;
 };
 
 class StackOnList: public IStackImplementation {
@@ -43,4 +48,6 @@ class StackOnList: public IStackImplementation {
 		const ValueType& top() const override;
 		bool isEmpty() const override;
 		size_t size() const override;
+		ValueType& operator[](int k) override;
+    		const ValueType& operator[](int k) const override;
 };
