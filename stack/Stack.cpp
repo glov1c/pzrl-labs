@@ -10,27 +10,27 @@ Stack::Stack(StackContainer container): _containerType(container) {
 }
 
 
-Stack::Stack(const ValueType* valueArray, const size_t arraySize, StackContainer container) {
+Stack::Stack(const ValueType* valueArray, const size_t arraySize, StackContainer container): _containerType(container) {
 	if (container == StackContainer::Vector) _pimpl = new StackOnVector(); 
 	else if (container == StackContainer::List) _pimpl = new StackOnList(); 
 	else throw std::runtime_error("no such container type");
 
 	for(size_t i = 0; i < arraySize; i++) {
-		push(valueArray[i]);
+		_pimpl->push(valueArray[i]);
 	}
 }
 
-Stack::Stack(const IStackImplementation* impl, const size_t arraySize, StackContainer container) {
+Stack::Stack(const IStackImplementation* impl, const size_t arraySize, StackContainer container) : _containerType(container){
 	if (container == StackContainer::Vector) _pimpl = new StackOnVector(); 
 	else if (container == StackContainer::List) _pimpl = new StackOnList(); 
 	else throw std::runtime_error("no such container type");
 
 	for(size_t i = 0; i < arraySize; i++) {
-		push((*impl)[i]);
+		_pimpl->push((*impl)[i]);
 	}
 }
 
-Stack::Stack(const Stack& copyStack) {
+Stack::Stack(const Stack& copyStack): _containerType(copyStack._containerType) {
 	if (copyStack._pimpl == nullptr) return;
 	if (copyStack._containerType == StackContainer::Vector) {
 		*this = Stack(copyStack._pimpl, copyStack._pimpl->size(), StackContainer::Vector);
@@ -42,8 +42,9 @@ Stack::Stack(const Stack& copyStack) {
 
 Stack& Stack::operator=(const Stack& copyStack) {
 	if (this == &copyStack) return *this;
+	delete _pimpl;
+	_pimpl = nullptr;
 	*this = Stack(copyStack);
-	delete copyStack._pimpl;
 	return *this;
 }
 
@@ -53,7 +54,10 @@ Stack::Stack(Stack&& moveStack) noexcept: _pimpl(moveStack._pimpl), _containerTy
 
 Stack& Stack::operator=(Stack&& moveStack) noexcept {
 	if (this == &moveStack) return *this;
-	*this = Stack(moveStack);
+	delete _pimpl;
+	_pimpl = moveStack._pimpl;
+	_containerType = moveStack._containerType;
+	moveStack._pimpl = nullptr;
 	return *this;
 }
 

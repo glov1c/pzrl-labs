@@ -28,7 +28,8 @@ ValueType& DLList::operator[](int k) {
 	if (k >= size()) throw std::runtime_error("invalid index");
 	Node* elem = head;
 	int pos = 0;
-	while (pos != k-1) {
+	while (pos != k) {
+		pos++;
 		elem = elem->next;
 	}
 	return elem->val;
@@ -38,7 +39,8 @@ const ValueType& DLList::operator[](int k) const {
 	if (k >= size()) throw std::runtime_error("invalid index");
 	Node* elem = head;
 	int pos = 0;
-	while (pos != k-1) {
+	while (pos != k) {
+		pos++;
 		elem = elem->next;
 	}
 	return elem->val;
