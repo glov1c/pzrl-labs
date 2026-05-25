@@ -33,8 +33,20 @@ void BinarySearchTree::Node::insert(const Key& key, const Value& value) {
 	if (parent == nullptr) *this = Node(key, value);
 	else {
 		Node* elem = parent;
-		if (key > elem->keyValuePair.first) elem->right->insert(key, value);
-		if (key < elem->keyValuePair.first) elem->left->insert(key, value);
+		if (key > elem->keyValuePair.first) {
+			if (elem->right != nullptr) {
+				elem->right->insert(key, value);
+				return;
+			}
+			right = new Node(key, value, this);
+		}
+		if (key < elem->keyValuePair.first) {
+			if (elem->left != nullptr) {
+				elem->left->insert(key, value);
+				return;
+			}
+			left = new Node(key, value, this);
+		}
 		if (key == elem->keyValuePair.first) elem->keyValuePair.second = value;
 	}
 }
@@ -117,11 +129,23 @@ void BinarySearchTree::Node::erase_all() {
 	delete node;
 }
 
-
+BinarySearchTree::Node* BinarySearchTree::copy_all(const Node* other) {
+	if (other == nullptr) return nullptr;
+	Node* elem = new Node(*other);
+	elem->left = copy_all(other->left);
+	if (elem->left) {
+		elem->left->parent = elem;
+	}
+	elem->right = copy_all(other->right);
+    	if (elem->right) {
+	       	elem->right->parent = elem;
+	}
+	return elem;
+}
 
 BinarySearchTree::BinarySearchTree(const BinarySearchTree& other): _size(other._size) {
 	if (other._root == nullptr) _root = nullptr;
-	_root = new Node(*other._root);
+	_root = copy_all(other._root);
 }
 
 BinarySearchTree& BinarySearchTree::operator=(const BinarySearchTree& other) {
@@ -237,6 +261,7 @@ const std::pair<Key, Value>& BinarySearchTree::ConstIterator::operator*() const 
 
 
 const std::pair<Key, Value>* BinarySearchTree::ConstIterator::operator->() const {
+	if (_node == nullptr) throw std::runtime_error("empty node");
 	return &_node->keyValuePair;
 }
 
