@@ -34,7 +34,6 @@ class BinarySearchTree
         //! Удалить узел из поддерева, где текущий узел - корень
         void erase(const Key &key);
 
-	void erase_all();
 
         std::pair<Key, Value> keyValuePair; //!< Пара ключ - значение
         Node *parent = nullptr; //!< родительский узел
@@ -113,6 +112,7 @@ public:
     //! Найти первый элемент в дереве, равный ключу key
     Iterator find(const Key &key);
 
+    void  erase_all(const Node* node);
     Node* copy_all(const Node* other);
     /*!***********************************************************
     Найти все элементы, у которых ключ равен key:
