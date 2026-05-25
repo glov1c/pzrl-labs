@@ -79,6 +79,7 @@ public:
 
     private:
         Node *_node;
+        friend BinarySearchTree;
     };
 
     //! Константный итератор бинарного дерева поиска
@@ -101,6 +102,7 @@ public:
 
     private:
         const Node *_node;
+        friend BinarySearchTree;
     };
 
     //! Вставить элемент с ключем key и значением value
@@ -148,7 +150,7 @@ public:
     //! Получить размер дерева
     size_t size() const;
     //! Вывести дерево в консоль
-    void output_tree();
+    void output_tree() const;
 
 private:
     size_t _size = 0; //!< размер дерева
