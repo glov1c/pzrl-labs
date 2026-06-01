@@ -18,7 +18,7 @@ class BinarySearchTree
         //! \param parent - родительский узел
         //! \param left - левый дочерний узел
         //! \param right - правый дочерний узел
-        Node(Key key, Value value, 
+        Node(Key key, Value value, bool color = false,
              Node *parent = nullptr, Node *left = nullptr, 
              Node *right = nullptr);
 
@@ -32,24 +32,29 @@ class BinarySearchTree
         //! Вставить новый узел в поддерево, где текущий узел - корень
         void insert(const Key &key, const Value &value, Node** root);
         //! Удалить узел из поддерева, где текущий узел - корень
-        void erase(const Key &key);
-
+        void erase(const Key &key, Node** root);
+        
         void rotateLeft();
         void rotateRight();
 
         void insertRebalance(Node** root);
+        void eraseRebalance(Node** root);
 
-	    Node* uncle();
+        size_t getMaxHeight() const;
 
         std::pair<Key, Value> keyValuePair; //!< Пара ключ - значение
         Node *parent = nullptr; //!< родительский узел
         Node *left = nullptr;   //!< левый потомок
         Node *right = nullptr;  //!< правый потомок
-
-	bool color = false;
+		
+	bool color = false; // для красно-черного дерева
+	//uint8_t height = 0; // для AVL дерева; выбираете одно из двух
     };
 
 public:
+    void erase_all(const Node* node);
+    Node* copy_all(const Node* other);
+
     //! Конструктор по умолчанию
     BinarySearchTree() = default;
     //! Конструктор копирования
@@ -84,10 +89,10 @@ public:
 
         bool operator==(const Iterator &other) const;
         bool operator!=(const Iterator &other) const;
-
+		
+		friend BinarySearchTree;
     private:
         Node *_node;
-        friend BinarySearchTree;
     };
 
     //! Константный итератор бинарного дерева поиска
@@ -108,9 +113,9 @@ public:
         bool operator==(const ConstIterator &other) const;
         bool operator!=(const ConstIterator &other) const;
 
+		friend BinarySearchTree;
     private:
         const Node *_node;
-        friend BinarySearchTree;
     };
 
     //! Вставить элемент с ключем key и значением value
@@ -122,10 +127,6 @@ public:
     //! Найти первый элемент в дереве, равный ключу key
     Iterator find(const Key &key);
 
-    void  erase_all(const Node* node);
-    Node* copy_all(const Node* other);
-
-    
     /*!***********************************************************
     Найти все элементы, у которых ключ равен key:
       - первый итератор пары - первый элемент в дереве, равный key
@@ -161,6 +162,8 @@ public:
     size_t size() const;
     //! Вывести дерево в консоль
     void output_tree() const;
+    //! Получить максимальную высоту дерева
+    size_t max_height() const;
 
 private:
     size_t _size = 0; //!< размер дерева
