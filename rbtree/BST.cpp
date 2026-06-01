@@ -39,8 +39,9 @@ BinarySearchTree::Node* BinarySearchTree::Node::uncle() {
 	else return grandparent->right;
 }	
 
-void BinarySearchTree::rotateLeft(Node* node){
-	Node* r = node->right;
+void BinarySearchTree::Node::rotateLeft(){
+	Node* r = right;
+	Node* node = this;
 	node->right = r->left;
 	if (r->left != nullptr){
 		r->left->parent = node;
@@ -61,9 +62,10 @@ void BinarySearchTree::rotateLeft(Node* node){
 	node->parent = r;
 }
 
-void BinarySearchTree::rotateRight(Node* node){
-	Node* l = node->left;
-	node->left = l->right;
+void BinarySearchTree::Node::rotateRight(){
+	Node* l = left;
+	Node* node = this;
+	left = l->right;
 	if (l->right){
 		l->right->parent = node;
 	}
@@ -83,7 +85,7 @@ void BinarySearchTree::rotateRight(Node* node){
 	node->parent = l;
 }
 
-void BinarySearchTree::Node::insert(const Key& key, const Value& value) {
+void BinarySearchTree::Node::insert(const Key& key, const Value& value, Node** root) {
 		Node* elem = parent;
 		if (key > keyValuePair.first) {
 			if (right != nullptr) {
@@ -91,6 +93,7 @@ void BinarySearchTree::Node::insert(const Key& key, const Value& value) {
 				return;
 			}
 			right = new Node(key, value, this);
+			right->insertRebalance(root);
 		}
 		else if (key <= keyValuePair.first) {
 			if (left != nullptr) {
@@ -98,9 +101,48 @@ void BinarySearchTree::Node::insert(const Key& key, const Value& value) {
 				return;
 			}
 			left = new Node(key, value, this);
+			left->insertRebalance(root);
 		}
 }
 
+void BinarySearchTree::Node::insertRebalance(Node** root) {
+    if (!parent) {
+        color = 0;
+        *root = this;
+        return;
+    }
+
+    if (parent->color == false) 
+        return;
+
+    Node* uncle = this->uncle();
+    if (uncle && uncle->color) {
+        parent->color = false;
+        uncle->color = false;
+        parent->parent->color = true;
+        parent->parent->insertRebalance(root);
+        return;
+    } 
+    Node* n = this;
+    if (n == parent->right && parent == parent->parent->left) {
+        parent->rotateLeft();
+        n = left;
+    } 
+	else if (n == parent->left && parent == parent->parent->right) {
+        parent->rotateRight();
+        n = right;
+    }
+
+    n->parent->color = false;
+    n->parent->parent->color = true;
+    if ((n == n->parent->left) && (n->parent == n->parent->parent->left)) {
+        if (n->parent->parent == *root) *root = n->parent->parent->left;
+        n->parent->parent->rotateRight();
+    } else {
+        if (n->parent->parent == *root) *root = n->parent->parent->right;
+        n->parent->parent->rotateLeft();
+    }
+}
 
 void BinarySearchTree::Node::erase(const Key& key) {
 		Node* elem = this;

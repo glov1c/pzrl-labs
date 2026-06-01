@@ -30,11 +30,16 @@ class BinarySearchTree
         //! Вывод в консоль поддерева, где текущий узел - корень
         void output_node_tree() const;
         //! Вставить новый узел в поддерево, где текущий узел - корень
-        void insert(const Key &key, const Value &value);
+        void insert(const Key &key, const Value &value, Node** root);
         //! Удалить узел из поддерева, где текущий узел - корень
         void erase(const Key &key);
 
-	Node* uncle();
+        void rotateLeft();
+        void rotateRight();
+
+        void insertRebalance(Node** root);
+
+	    Node* uncle();
 
         std::pair<Key, Value> keyValuePair; //!< Пара ключ - значение
         Node *parent = nullptr; //!< родительский узел
@@ -120,8 +125,7 @@ public:
     void  erase_all(const Node* node);
     Node* copy_all(const Node* other);
 
-    void rotateLeft(Node* node);
-    void rotateRight(Node* node);
+    
     /*!***********************************************************
     Найти все элементы, у которых ключ равен key:
       - первый итератор пары - первый элемент в дереве, равный key

@@ -5,7 +5,7 @@
 size_t HashTable::hash_function(const KeyType& key) const {
 	size_t res = 0;
 	for(size_t i = 0; i < key.size(); i++) {
-	       res = (res * 19 + key[i]);
+	       res = (res * 23 + key[i]);
 	}
 	return res % _capacity;
 }	
