@@ -26,7 +26,7 @@ public:
     ValueType& operator[](const KeyType &key);
 
     //! Загрузка хеш-таблицы. Считается как отношение количества занятых ячеек к вместимости хеш-таблицы.
-    double getLoadFactor() const;
+    double getLoadFactor();
 
 private:
     int32_t _capacity;  //!< Вместимость хеш-таблицы
